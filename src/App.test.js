@@ -7,6 +7,14 @@ import {
 } from "@testing-library/react";
 import App from "./App";
 
+beforeEach(() => {
+  jest.spyOn(window, "fetch").mockImplementation(mockFetch);
+});
+
+afterEach(() => {
+  jest.restoreAllMocks();
+});
+
 describe("Header", () => {
   test("Header button shows *Show all* when clicked once and *Show Favorites when clicked twice", async () => {
     await act(async () => render(<App />));
@@ -33,14 +41,6 @@ describe("Search", () => {
     });
     fireEvent.click(headerButton);
     expect(searchInput).not.toBeInTheDocument();
-  });
-
-  test("filter by language", async () => {
-    await act(async () => render(<App />));
-    const searchInput = screen.queryByRole("searchbox");
-    const result = screen.queryByText("projects");
-    fireEvent.change(searchInput, { target: { value: "javascript" } });
-    expect(result).toBeTruthy;
   });
 
   test("Repositories get loaded on initialization", async () => {
